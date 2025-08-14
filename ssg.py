@@ -69,7 +69,8 @@ if __name__ == "__main__":
                         current_data_type = ""
                         for char in html_contents:
                             if is_in_hashtags and char == '#' and last_char == '#':
-                                html_contents = html_contents.replace("##" + current_data_type + "##", profile[current_data_type])
+                                if current_data_type in profile.keys():
+                                    html_contents = html_contents.replace("##" + current_data_type + "##", profile[current_data_type])
                                 is_in_hashtags = False
                                 current_data_type = ""
                             elif is_in_hashtags and char != '#':
