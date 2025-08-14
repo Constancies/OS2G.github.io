@@ -6,16 +6,15 @@ id="members">
     <ul class="inline profile-meta">
       <li>##major##</li>
       <li>
-        ::before
         Joined
         ##joined##
       </li>
       <li>
-        ::before
         ##role##
       </li>
     </ul>
     <p class="profile-bio">
       ##bio##
     </p>
+    </section>
 </span>
