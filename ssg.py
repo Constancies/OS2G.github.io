@@ -2,6 +2,7 @@
 Simple SSG for the UNL OS2G website.
 """
 from enum import Enum
+import json
 from pathlib import Path
 import shutil
 import sys
@@ -53,6 +54,32 @@ if __name__ == "__main__":
                     contents = path.read_text(encoding="utf-8")
                     page = layout.replace("##CONTENTS##", contents)
                     dest_path.write_text(page)
+                elif path.match("*.plate"):
+                    template = path.read_text(encoding="utf-8")
+                    json_path = str(path).replace("plate", "json")
+                    json_text = Path(json_path).read_text()
+                    profiles = json.loads(json_text)
+
+                    index_path = str(dir_path) + "/index.html"
+                    html_contents = Path(index_path).read_text()
+
+                    for profile in profiles:
+                        html_contents += template
+                        is_in_hashtags = False
+                        current_data_type = ""
+                        for char in html_contents:
+                            if is_in_hashtags and char == '#' and last_char == '#':
+                                if current_data_type in profile.keys():
+                                    html_contents = html_contents.replace("##" + current_data_type + "##", profile[current_data_type])
+                                is_in_hashtags = False
+                                current_data_type = ""
+                            elif is_in_hashtags and char != '#':
+                                current_data_type += char
+                            elif char == '#' and last_char == '#':
+                                is_in_hashtags = True
+                            last_char = char
+                    page = layout.replace("##CONTENTS##", html_contents)
+                    Path(str(dest_dir_path) + "/index.html").write_text(page)
                 else:
                     # shutil does *really* fast copy operations
                     shutil.copy(f"{path}", f"{dest_path}")
